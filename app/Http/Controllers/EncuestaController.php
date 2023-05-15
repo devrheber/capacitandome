@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Curso;
 use App\Models\Encuesta;
+use App\Models\PreguntaEncuesta;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EncuestaController extends Controller
 {
@@ -27,7 +29,40 @@ class EncuestaController extends Controller
     }
 
     public function actualizar_recursos(Request $request) {
+        $encuesta = Encuesta::where('id', $request->post('idencuesta'))->first();
 
+        DB::beginTransaction();
+
+        try {
+            //dd($request->all());
+            if ($encuesta) {
+                for ($x = 0; $x < count($request->post('pregunta')); $x++) {
+                    if ($request->post('idpregunta')[$x] != 0) {
+                        $pregunta_encuesta = PreguntaEncuesta::find($request->post('idpregunta')[$x]);
+                    } else {
+                        $pregunta_encuesta = new PreguntaEncuesta;
+                    }
+    
+                    $pregunta_encuesta->encuesta_id = $request->post('idencuesta');
+                    $pregunta_encuesta->tipo_pregunta = $request->post('tipo_pregunta')[$x];
+                    $pregunta_encuesta->nombre = $request->post('pregunta')[$x];
+                    $pregunta_encuesta->estado = isset($request->post('estado')[$x]) ? $request->post('estado')[$x] : 1;
+                    $pregunta_encuesta->save();
+                }
+            } else {
+                return redirect('/admin/encuestas');
+            }
+
+            DB::commit();
+
+            return redirect('/admin/encuestas')->with('success', 'Se registraron los recursos con éxito');
+
+        } catch (\Exception $e) {
+            // Si ocurre un error, se deshace toda la transacción
+            DB::rollback();
+            //dd($e);
+            return redirect('/admin/encuestas')->with('error','No se pudo agregar los recursos');
+        }
     }
 
     public function editar($idencuesta) {

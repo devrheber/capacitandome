@@ -61,6 +61,7 @@
                                     <tr>
                                         <th style="width: 100px">#</th>
                                         <th>Pregunta</th>
+                                        <th>Tipo pregunta</th>
                                         <th style="width: 150px">Opción</th>
                                     </tr>
                                 </thead>
@@ -69,13 +70,19 @@
                                         <tr>
                                             <td>Pregunta {{$index + 1}}</td>
                                             <td>
-                                                <input type="hidden" id="idpregunta[]" value="{{$pregunta->id}}">
+                                                <input type="hidden" name="idpregunta[]" value="{{$pregunta->id}}">
                                                 <textarea name="pregunta[]" class="form-control">{{$pregunta->nombre}}</textarea>
                                             </td>
                                             <td>
+                                                <select name="tipo_pregunta[]" class="form-control">
+                                                    <option value="0" {{$pregunta->tipo_pregunta == 0 ? 'selected' : ''}}>TEXTO</option>
+                                                    <option value="1" {{$pregunta->tipo_pregunta == 1 ? 'selected' : ''}}>OPCIÓN</option>
+                                                </select>
+                                            </td>
+                                            <td>
                                                 <select name="estado[]" class="form-control">
-                                                    <option value="0" {{$encuesta->estado == 1 ? 'selected' : ''}}>DESHABILITADO</option>
-                                                    <option value="1" {{$encuesta->estado == 1 ? 'selected' : ''}}>HABILITADO</option>
+                                                    <option value="0" {{$pregunta->estado == 0 ? 'selected' : ''}}>DESHABILITADO</option>
+                                                    <option value="1" {{$pregunta->estado == 1 ? 'selected' : ''}}>HABILITADO</option>
                                                 </select>
                                             </td>
                                         </tr>
@@ -113,8 +120,14 @@
             let pregunta = '<tr>';
                 pregunta += '<td>Nueva PREGUNTA</td>' +
                         '<td>' +
-                            '<input type="hidden" id="idpregunta[]" value="0">' +
+                            '<input type="hidden" name="idpregunta[]" value="0">' +
                                 '<textarea name="pregunta[]" class="form-control" placeholder="Ingrese su pregunta"></textarea>' +
+                        '</td>' +
+                        '<td>' +
+                            '<select name="tipo_pregunta[]" class="form-control">' +
+                                '<option value="0">TEXTO</option>' +
+                                '<option value="1">OPCIÓN</option>' +
+                            '</select>' +
                         '</td>' +
                     '<td>' +
                         '<button type="button" class="btn btn-sm btn-danger eliminar_pregunta"><i class="la la-trash"></i></button>'

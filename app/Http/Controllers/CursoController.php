@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CursoRequest;
 use App\Models\Persona;
 use App\Models\Usuario;
+use App\Models\Encuesta;
 use App\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -734,10 +735,12 @@ class CursoController extends Controller
         $idusuario  = Auth::user()->idusuario;
         $idpersona  = Auth::user()->idpersona;
         $curso      = DB::table('curso')->where('idcurso', '=', $idcurso)->first();
+        $encuesta = Encuesta::where('id', 1)->with('pregunta_encuestas')->first();
         
         $nombre   = Persona::select(DB::raw('CONCAT(nombre, apellidos) AS nombreusuario'))->where('idpersona', '=', $idpersona)->first();
-        return view('web.calificacion_curso', compact('curso', 'nombre', 'idusuario'))->render();
+        return view('web.calificacion_curso', compact('curso', 'nombre', 'idusuario', 'encuesta'))->render();
     }
+
     public function store_calificacion_curso(Request $request)
     {
         $request->validate([

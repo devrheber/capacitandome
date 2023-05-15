@@ -103,123 +103,36 @@
                                                     <br>
                                                 </h5>
                                                 <!--preguntas-->
-                                                <div class="form-group">
-                                                    <input type="hidden" class="form-control" id="q1value" name="q1value" required>
-                                                    <h5 class="card-title">
-                                                        <strong>
-                                                            1.&nbsp;&nbsp;¿Qué tan interesante considera el contenido del curso?
-                                                        </strong>
-                                                    </h5>
-                                                    <div class="form-check form-check-inline" style="margin-left: 30px;">
-                                                        <input class="form-check-input" type="radio" name="pregunta1Opciones" id="q11" value="1" style="width: 1.5rem; height: 1.5rem;" />
-                                                        <label class="form-check-label" for="q11">1</label>
-                                                    </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="pregunta1Opciones" id="q12" value="2" style="width: 1.5rem; height: 1.5rem;" />
-                                                        <label class="form-check-label" for="q12">2</label>
-                                                    </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="pregunta1Opciones" id="q13" value="3" style="width: 1.5rem; height: 1.5rem;" />
-                                                        <label class="form-check-label" for="q13">3</label>
-                                                    </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="pregunta1Opciones" id="q14" value="4" style="width: 1.5rem; height: 1.5rem;" />
-                                                        <label class="form-check-label" for="q14">4</label>
-                                                    </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="pregunta1Opciones" id="q15" value="5" style="width: 1.5rem; height: 1.5rem;" />
-                                                        <label class="form-check-label" for="q15">5</label>
+                                                @foreach($encuesta->pregunta_encuestas as $index => $pregunta)
+                                                    <div class="form-group">
+                                                        <input type="hidden" class="form-control" id="q1value" name="q1value" required>
+                                                        <h5 class="card-title">
+                                                            <strong>
+                                                                {{ $index + 1 }}.&nbsp;&nbsp;{{ $pregunta->nombre }}
+                                                            </strong>
+                                                        </h5>
+                                                        <div class="form-check form-check-inline" style="margin-left: 30px;">
+                                                            <input class="form-check-input" type="radio" name="respuesta_{{$index}}" id="q1_{{$index}}" value="1" style="width: 1.5rem; height: 1.5rem;" />
+                                                            <label class="form-check-label" for="q1_{{$index}}">1</label>
+                                                        </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio" name="respuesta_{{$index}}" id="q2_{{$index}}" value="2" style="width: 1.5rem; height: 1.5rem;" />
+                                                            <label class="form-check-label" for="q2_{{$index}}">2</label>
+                                                        </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio" name="respuesta_{{$index}}" id="q3_{{$index}}" value="3" style="width: 1.5rem; height: 1.5rem;" />
+                                                            <label class="form-check-label" for="q3_{{$index}}">3</label>
+                                                        </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio" name="respuesta_{{$index}}" id="q4_{{$index}}" value="4" style="width: 1.5rem; height: 1.5rem;" />
+                                                            <label class="form-check-label" for="q4_{{$index}}">4</label>
+                                                        </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio" name="respuesta_{{$index}}" id="q5_{{$index}}" value="5" style="width: 1.5rem; height: 1.5rem;" />
+                                                            <label class="form-check-label" for="q5_{{$index}}">5</label>
+                                                        </div>
                                                     </div>
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <input type="hidden" class="form-control" id="q2value" name="q2value" value="">
-                                                    <h5 class="card-title">
-                                                        <strong>
-                                                            2.&nbsp;&nbsp;¿Qué tan claros fueron los objetivos del curso?
-                                                        </strong>
-                                                    </h5>
-                                                    <div class="form-check form-check-inline" style="margin-left: 30px;">
-                                                        <input class="form-check-input" type="radio" name="pregunta2Opciones" id="q21" value="1" style="width: 1.5rem; height: 1.5rem;" />
-                                                        <label class="form-check-label" for="q21">1</label>
-                                                    </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="pregunta2Opciones" id="q22" value="2" style="width: 1.5rem; height: 1.5rem;" />
-                                                        <label class="form-check-label" for="q22">2</label>
-                                                    </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="pregunta2Opciones" id="q23" value="3" style="width: 1.5rem; height: 1.5rem;" />
-                                                        <label class="form-check-label" for="q23">3</label>
-                                                    </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="pregunta2Opciones" id="q24" value="4" style="width: 1.5rem; height: 1.5rem;" />
-                                                        <label class="form-check-label" for="q24">4</label>
-                                                    </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="pregunta2Opciones" id="q25" value="5" style="width: 1.5rem; height: 1.5rem;" />
-                                                        <label class="form-check-label" for="q25">5</label>
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <input type="hidden" class="form-control" id="q3value" name="q3value" value="">
-                                                    <h5 class="card-title">
-                                                        <strong>
-                                                            3.&nbsp;&nbsp;¿Cómo calificarías al docente del curso?
-                                                        </strong>
-                                                    </h5>
-                                                    <div class="form-check form-check-inline" style="margin-left: 30px;">
-                                                        <input class="form-check-input" type="radio" name="pregunta3Opciones" id="q31" value="1" style="width: 1.5rem; height: 1.5rem;" />
-                                                        <label class="form-check-label" for="q31">1</label>
-                                                    </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="pregunta3Opciones" id="q32" value="2" style="width: 1.5rem; height: 1.5rem;" />
-                                                        <label class="form-check-label" for="q32">2</label>
-                                                    </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="pregunta3Opciones" id="q33" value="3" style="width: 1.5rem; height: 1.5rem;" />
-                                                        <label class="form-check-label" for="q33">3</label>
-                                                    </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="pregunta3Opciones" id="q34" value="4" style="width: 1.5rem; height: 1.5rem;" />
-                                                        <label class="form-check-label" for="q34">4</label>
-                                                    </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="pregunta3Opciones" id="q35" value="5" style="width: 1.5rem; height: 1.5rem;" />
-                                                        <label class="form-check-label" for="q35">5</label>
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <input type="hidden" class="form-control" id="q4value" name="q4value" value="">
-                                                    <h5 class="card-title">
-                                                        <strong>
-                                                            4.&nbsp;&nbsp;¿El nivel de curso se ajusta a sus necesidades?
-                                                        </strong>
-                                                    </h5>
-                                                    <div class="form-check form-check-inline" style="margin-left: 30px;">
-                                                        <input class="form-check-input" type="radio" name="pregunta4Opciones" id="q41" value="1" style="width: 1.5rem; height: 1.5rem;" />
-                                                        <label class="form-check-label" for="q41">1</label>
-                                                    </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="pregunta4Opciones" id="q42" value="2" style="width: 1.5rem; height: 1.5rem;" />
-                                                        <label class="form-check-label" for="q42">2</label>
-                                                    </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="pregunta4Opciones" id="q43" value="3" style="width: 1.5rem; height: 1.5rem;" />
-                                                        <label class="form-check-label" for="q43">3</label>
-                                                    </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="pregunta4Opciones" id="q42" value="4" style="width: 1.5rem; height: 1.5rem;" />
-                                                        <label class="form-check-label" for="q42">4</label>
-                                                    </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="pregunta4Opciones" id="q42" value="5" style="width: 1.5rem; height: 1.5rem;" />
-                                                        <label class="form-check-label" for="q42">5</label>
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group">
+                                                @endforeach
                                                     <input type="hidden" class="form-control" id="q5value" name="q5value" value="">
                                                     <h5 class="card-title">
                                                         <strong>
