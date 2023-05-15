@@ -735,7 +735,9 @@ class CursoController extends Controller
         $idusuario  = Auth::user()->idusuario;
         $idpersona  = Auth::user()->idpersona;
         $curso      = DB::table('curso')->where('idcurso', '=', $idcurso)->first();
-        $encuesta = Encuesta::where('id', 1)->with('pregunta_encuestas')->first();
+        $encuesta = Encuesta::where('id', 1)->with(['pregunta_encuestas' => function($query) {
+            $query->where('estado', 1);
+        }])->first();
         
         $nombre   = Persona::select(DB::raw('CONCAT(nombre, apellidos) AS nombreusuario'))->where('idpersona', '=', $idpersona)->first();
         return view('web.calificacion_curso', compact('curso', 'nombre', 'idusuario', 'encuesta'))->render();
