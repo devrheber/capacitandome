@@ -17,18 +17,18 @@
                     <td style="max-width: 340px; vertical-align: middle;" scope="row"><strong>{{ $encuesta->titulo }}</strong></td>
                     <td style="vertical-align: middle;" scope="row">{{ $encuesta->curso->titulo }}</td>
                     <td style="vertical-align: middle; max-width: 480px;" scope="row" class="text-center second_td">
-                        <div class="btn-group">
-                            <button type="button" class="btn dropdown-toggle text-white status-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {{ $encuesta->encuesta_estado() }}
-                            </button>
+{{--                        <div class="btn-group">--}}
+{{--                            <button type="button" class="btn dropdown-toggle text-white status-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">--}}
+{{--                                {{ $encuesta->encuesta_estado() }}--}}
+{{--                            </button>--}}
 
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" onclick="desactivar({{ $encuesta->id }}, 1)" href="javascript:void(0)">Habilitado</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" onclick="desactivar({{ $encuesta->id }}, 0)" href="javascript:void(0)">Deshabilitado</a>
-                                <div class="dropdown-divider"></div>
-                            </div>
-                        </div>
+{{--                            <div class="dropdown-menu">--}}
+{{--                                <a class="dropdown-item" onclick="desactivar({{ $encuesta->id }}, 1)" href="javascript:void(0)">Habilitado</a>--}}
+{{--                                <div class="dropdown-divider"></div>--}}
+{{--                                <a class="dropdown-item" onclick="desactivar({{ $encuesta->id }}, 0)" href="javascript:void(0)">Deshabilitado</a>--}}
+{{--                                <div class="dropdown-divider"></div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
                     </td>
                     <td style="vertical-align: middle;" scope="row" class="text-center">
                         <a href="/admin/encuesta/editar/{{$encuesta->id}}" class="btn btn-light-warning font-weight-bold btn-sm my-1" data-toggle="tooltip" data-placement="top" title="" data-original-title="Editar"><i class="fas fa-edit p-0"></i></a>

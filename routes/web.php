@@ -323,10 +323,15 @@ Route::get('/admin/prueba/lista', 'ReportesController@getListarReportes')->middl
 // Encuestas
 Route::group(['middleware' => ['web','auth']], function () {
     Route::get('/admin/encuestas', [EncuestaController::class, 'index'])->name('admin_encuesta_index');
+    Route::get('/admin/encuestas/resultados', [EncuestaController::class, 'resultados'])->name('admin_encuesta_resultados');
+
     Route::get('/admin/encuesta/nuevo', [EncuestaController::class, 'nuevo']);
     Route::get('/admin/encuesta/editar/{idencuesta}', [EncuestaController::class, 'editar']);
     Route::get('/admin/encuesta/recursos/{idencuesta}', [EncuestaController::class, 'recursos']);
     Route::post('/admin/encuesta/recursos', [EncuestaController::class, 'actualizar_recursos'])->name('admin_encuesta_recursos');
     Route::post('/admin/encuesta/editar', [EncuestaController::class, 'actualizar'])->name('admin_encuesta_editar');
     Route::get('/admin/encuestas/listar/{estado}', [EncuestaController::class, 'getListarEncuestasPaginate']);
+    Route::get('/admin/encuestas/listar/resultado', [EncuestaController::class, 'getListarEncuestasResultadosPaginate']);
+
+    Route::post('/encuesta/respuesta', [EncuestaController::class, 'store_encuesta_curso'])->name('store_encuesta_curso');
 });

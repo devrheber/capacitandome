@@ -1,6 +1,6 @@
 @extends('layouts.app_admin')
 
-@section('tituloPagina','Lista de encuestas')
+@section('tituloPagina','Lista de resultados')
 
 @section('styles')
     <style type="text/css">
@@ -16,7 +16,7 @@
         <div class="container-fluid d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
             <div class="d-flex align-items-center flex-wrap mr-1">
                 <div class="d-flex align-items-baseline flex-wrap mr-5">
-                    <h5 class="text-dark font-weight-bold my-1 mr-5"> <i class="fa fa-list mr-1"></i> ENCUESTAS DE CAPACITÁNDOME</h5>
+                    <h5 class="text-dark font-weight-bold my-1 mr-5"> <i class="fa fa-list mr-1"></i> RESULTADOS DE ENCUESTAS</h5>
                 </div>
             </div>
 
@@ -35,40 +35,11 @@
             <div class="card-header py-3">
                 <div class="card-title">
                     <span class="card-icon"><i class="fa fa-list text-primary"></i></span>
-                    <h3 class="card-label">Lista de encuestas</h3>
-                </div>
-
-                <div class="card-toolbar">
-                    <!--begin::Button-->
-{{--                    <a href="/admin/encuesta/nuevo" class="btn btn-primary"> <i class="la la-plus-circle"></i> REGISTRAR</a>--}}
-                    <!--end::Button-->
+                    <h3 class="card-label">Lista de resultados</h3>
                 </div>
             </div><!-- .card-header -->
 
             <div class="card-body">
-                <!--begin: Datatable-->
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="table-responsive">
-                            <table class="table table-bordered">
-                                <tr>
-                                    <td colspan="6">
-                                        <span>
-                                            Presione el botón <span class="btn btn-light-success btn-sm"><i class="la la-plus-circle p-0"></i></span> para configurar los siguiente:
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">
-                                        <a href="javascript:" class="btn btn-light-info"><i class="fas fa-book-reader p-0"></i></a>
-                                    </td>
-                                    <td style="vertical-align: middle;">Gestión de preguntas</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="form-row d-flex align-items-center">
                     <div class="col-md-9 col-xs-12">
                         <div class="form-group mb-9">
@@ -76,49 +47,14 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-search"></i></span>
                                 </div>
-                                <input type="text" class="form-control" placeholder="Buscar encuesta..." id="buscar_encuesta">
+                                <input type="text" class="form-control" placeholder="Buscar..." id="buscar">
                             </div>
 
                         </div>
                     </div>
-
-                    <div class="col-md-3 col-xs-12">
-                        <div class="custom-control custom-switch mb-9 d-flex align-items-center">
-                            <div class="mx-auto">
-                                <input type="checkbox" class="custom-control-input" id="switch1">
-                                <label class="custom-control-label" for="switch1">Mostrar encuestas deshabilitadas</label>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-12">
-                        @if(Session::has('success'))
-                            <div class="alert alert-success my-3">
-                                <div class="alert-close">
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                        <span aria-hidden="true"><i class="ki ki-close"></i></span>
-                                    </button>
-                                </div>
-                                {{Session::get('success')}}
-                            </div>
-                        @endif
-
-                        @if(Session::has('error'))
-                            <div class="alert alert-danger">
-                                <div class="alert-close">
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                        <span aria-hidden="true"><i class="ki ki-close"></i></span>
-                                    </button>
-                                </div>
-                                {{Session::get('error')}}
-                            </div>
-                        @endif
-                    </div>
-                </div>
-
-                <div class="row" id="table_encuestas">
+                <div class="row" id="table_resultados">
 
                 </div>
                 <!--end: Datatable-->
@@ -271,39 +207,22 @@
 @section('script')
     <script>
         function index() {
-            listar_encuestas(1);
+            listar_resultados();
 
-            $("#buscar_encuesta").on('keyup', function () {
-                let checked = document.getElementById('switch1');
-
-                if (checked.checked) {
-                    listar_encuestas(0);
-                } else {
-                    listar_encuestas(1);
-                }
-            });
-
-            // Mostrar u ocultar cursos deshabilitados
-            $("#switch1").on('change', function () {
-                let checked = document.getElementById('switch1');
-
-                if (checked.checked) {
-                    listar_encuestas(0);
-                } else {
-                    listar_encuestas(1);
-                }
+            $("#buscar").on('keyup', function () {
+                listar_resultados();
             });
 
             $(document).on("click", '.paginate-go', function(e) {
                 e.preventDefault();
-                listar_encuestas($(this).attr('href').split('page=')[1]);
+                listar_resultados($(this).attr('href').split('page=')[1]);
             });
         }
 
         // Listar solo los cursos habilitados
-        function listar_encuestas(estado, page = 1) {
-            $.get(`/admin/encuestas/listar/${estado}?page=${page}&filtro_search=${$("#buscar_encuesta").val()}`, function (data, textStatus, jqXHR) {
-                $("#table_encuestas").html(data);
+        function listar_resultados(page = 1) {
+            $.get(`/admin/encuestas/listar/resultado&page=${page}&filtro_search=${$("#buscar").val()}`, function (data, textStatus, jqXHR) {
+                $("#table_resultados").html(data);
 
                 $('[data-toggle="tooltip"]').tooltip()
             });

@@ -11,7 +11,7 @@ class RespuestaEncuesta extends Model
     use HasFactory;
 
     public function pregunta() {
-        return $this->belongsTo(Pregunta::class);
+        return $this->belongsTo(PreguntaEncuesta::class);
     }
 
     public function user() {

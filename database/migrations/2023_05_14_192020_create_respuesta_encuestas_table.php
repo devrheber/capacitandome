@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('pregunta_encuesta_id');
             $table->integer('user_id');
-            $table->integer('puntos');
+            $table->string('respuesta', 500);
             $table->timestamps();
 
             $table->foreign('pregunta_encuesta_id')->references('id')->on('pregunta_encuestas');

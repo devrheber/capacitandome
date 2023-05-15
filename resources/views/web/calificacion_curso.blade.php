@@ -83,14 +83,43 @@
                         <div class="tab-pane fade active show" role="tabpanel">
                             <div class="my-course-content-body">
                                 <div class="row">
+                                    <div class="col-md-12">
+                                        @if(Session::has('success'))
+                                            <div class="alert alert-success my-3">
+                                                <div class="alert-close">
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                        <span aria-hidden="true"><i class="ki ki-close"></i></span>
+                                                    </button>
+                                                </div>
+                                                {{Session::get('success')}}
+                                            </div>
+                                        @endif
+
+                                        @if(Session::has('error'))
+                                            <div class="alert alert-danger">
+                                                <div class="alert-close">
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                        <span aria-hidden="true"><i class="ki ki-close"></i></span>
+                                                    </button>
+                                                </div>
+                                                {{Session::get('error')}}
+                                            </div>
+                                        @endif
+
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                    </div>
+                                </div>
+                                <div class="row">
                                     <div class="card">
                                         <div class="card-header" style="background: green;">
                                             <h3 style="color: white;">Calificación del Curso: {{$curso->titulo}}</h3>
                                         </div>
                                         <div class="card-body">
-                                            <form action="{{route('store_calificacion_curso')}}" method="POST" class="needs-validation" novalidate>
+                                            <form action="{{route('store_encuesta_curso')}}" method="POST" class="needs-validation" novalidate>
                                                 @csrf
-                                                <input id="idusuario" name="idusuario" value="{{ auth()->user()->idusuario }}" type="hidden">
+                                                <input id="user_id" name="user_id" value="{{ auth()->user()->idusuario }}" type="hidden">
                                                 <input id="idcurso" name="idcurso" value="{{ $curso->idcurso }}" type="hidden">
                                                 <div class="row-md-10">
                                                     <p>* Evalue el curso entre 1 y 5 teniendo en cuenta el siguiente significado de las puntuaciones: <br></p>
@@ -105,6 +134,7 @@
                                                 <!--preguntas-->
                                                 @foreach($encuesta->pregunta_encuestas as $index => $pregunta)
                                                     <div class="form-group">
+                                                        <input type="hidden" name="pregunta[]" value="{{$pregunta->id}}">
                                                         <input type="hidden" class="form-control" id="q1value" name="q1value" required>
                                                         <h5 class="card-title">
                                                             <strong>
@@ -191,7 +221,7 @@
     </script>
     <script src="{{ asset('/recursos/ajax/web/miaprendizaje.js') }}"></script>
 
-    
+
 </body>
 
 </html>

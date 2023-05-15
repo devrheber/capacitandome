@@ -5,13 +5,21 @@ namespace App\Http\Controllers;
 use App\Curso;
 use App\Models\Encuesta;
 use App\Models\PreguntaEncuesta;
+use App\Models\RespuestaEncuesta;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Nette\Schema\ValidationException;
+use PHPUnit\Exception;
 
 class EncuestaController extends Controller
 {
     public function index() {
         return view('admin.encuesta.index');
+    }
+
+    public function resultados() {
+        return view('admin.encuesta.resultados');
     }
 
     public function nuevo() {
@@ -42,7 +50,7 @@ class EncuestaController extends Controller
                     } else {
                         $pregunta_encuesta = new PreguntaEncuesta;
                     }
-    
+
                     $pregunta_encuesta->encuesta_id = $request->post('idencuesta');
                     $pregunta_encuesta->tipo_pregunta = $request->post('tipo_pregunta')[$x];
                     $pregunta_encuesta->nombre = $request->post('pregunta')[$x];
@@ -104,5 +112,40 @@ class EncuestaController extends Controller
         }
 
         return  view('admin.encuesta.paginate_encuestas',  ['encuestas' => $encuestas])->render();
+    }
+
+    public function getListarEncuestasResultadosPaginate(Request $request) {
+        $resultados = RespuestaEncuesta::where([
+            ['respuesta', 'like', "%{$request->filtro_search}%"]
+        ])->with('user.Persona', 'pregunta.encuesta.curso.CursoDocenteUsuarios')->orderBy('updated_at', 'desc')->paginate(10);
+
+        return  view('admin.encuesta.paginate_resultados',  ['resultados' => $resultados])->render();
+    }
+
+    public function store_encuesta_curso(Request $request) {
+        DB::beginTransaction();
+
+        try {
+            for ($x = 0; $x < count($request->post('pregunta')); $x++) {
+                $respuesta_encuesta = new RespuestaEncuesta;
+                $respuesta_encuesta->pregunta_encuesta_id = $request->post('pregunta')[$x];
+                $respuesta_encuesta->respuesta = $request->post('respuesta_' . $x);
+                $respuesta_encuesta->user_id = Auth::id();
+                $respuesta_encuesta->save();
+            }
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Su respuesta se envió con éxito!');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()-with('error', 'No se pudo registrar la respuesta');
+        } catch (\PDOException $e) {
+            if ($e->getCode() === '23000' && $e->errorInfo[1] === 1062) {
+                DB::rollBack();
+                $errorMessage = 'No puedes realizar 2 veces la misma encuesta.';
+
+                return redirect()->back()->with('error', $errorMessage);
+            }
+        }
     }
 }
