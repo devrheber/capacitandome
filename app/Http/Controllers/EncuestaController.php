@@ -4,11 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Curso;
 use App\Models\Encuesta;
+use App\Models\EncuestaContestada;
+use App\Models\Pregunta;
 use App\Models\PreguntaEncuesta;
 use App\Models\RespuestaEncuesta;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Nette\Schema\ValidationException;
 use PHPUnit\Exception;
 
@@ -20,6 +25,17 @@ class EncuestaController extends Controller
 
     public function resultados() {
         return view('admin.encuesta.resultados');
+    }
+
+    public function detalle_resultado($idencuestacontestada) {
+        $respuestas = RespuestaEncuesta::with('pregunta')
+            ->where('encuesta_contestada_id', $idencuestacontestada)->get();
+        return view('admin.encuesta.resultados_detalle')->with(array('respuestas' => $respuestas));
+    }
+
+    public function estadisticas() {
+        $cursos = Curso::where('estado', 1)->get();
+        return view('admin.encuesta.estadisticas', compact('cursos'));
     }
 
     public function nuevo() {
@@ -114,10 +130,13 @@ class EncuestaController extends Controller
         return  view('admin.encuesta.paginate_encuestas',  ['encuestas' => $encuestas])->render();
     }
 
-    public function getListarEncuestasResultadosPaginate(Request $request) {
-        $resultados = RespuestaEncuesta::where([
-            ['respuesta', 'like', "%{$request->filtro_search}%"]
-        ])->with('user.Persona', 'pregunta.encuesta.curso.CursoDocenteUsuarios')->orderBy('updated_at', 'desc')->paginate(10);
+    public function getListarEncuestasResultadosPaginate(Request $request, $estado) {
+        $filtro = $request->filtro_search;
+        $resultados = EncuestaContestada::with(['user.Persona', 'curso.CursoDocenteUsuarios.persona'])
+            ->whereHas('curso', function($query) use ($filtro) {
+                $query->where('titulo', 'like', "%{$filtro}%");
+            })
+            ->orderBy('updated_at', 'desc')->paginate(10);
 
         return  view('admin.encuesta.paginate_resultados',  ['resultados' => $resultados])->render();
     }
@@ -126,26 +145,84 @@ class EncuestaController extends Controller
         DB::beginTransaction();
 
         try {
-            for ($x = 0; $x < count($request->post('pregunta')); $x++) {
-                $respuesta_encuesta = new RespuestaEncuesta;
-                $respuesta_encuesta->pregunta_encuesta_id = $request->post('pregunta')[$x];
-                $respuesta_encuesta->respuesta = $request->post('respuesta_' . $x);
-                $respuesta_encuesta->user_id = Auth::id();
-                $respuesta_encuesta->save();
+            $encuesta_contestada = EncuestaContestada::where([
+                ['user_id', Auth::id()],
+                ['encuesta_id', $request->post('idencuesta')]
+            ])->first();
+
+            if ($encuesta_contestada) {
+                DB::commit();
+                return redirect()->back()->with('error', 'No puedes realizar 2 veces la misma encuesta!');
+            } else {
+                $new_encuesta_contestada = new EncuestaContestada();
+                $new_encuesta_contestada->user_id = Auth::id();
+                $new_encuesta_contestada->encuesta_id = $request->post('idencuesta');
+                $new_encuesta_contestada->curso_id = $request->post('idcurso');
+                $new_encuesta_contestada->calificacion = $this->get_calificacion($request);
+                $new_encuesta_contestada->save();
+
+                for ($x = 0; $x < count($request->post('pregunta')); $x++) {
+                    $respuesta_encuesta = new RespuestaEncuesta;
+                    $respuesta_encuesta->encuesta_contestada_id = $new_encuesta_contestada->id;
+                    $respuesta_encuesta->pregunta_encuesta_id = $request->post('pregunta')[$x];
+                    $respuesta_encuesta->respuesta = $request->post('respuesta_' . $x);
+                    $respuesta_encuesta->save();
+                }
+
+                DB::commit();
+                return redirect()->back()->with('success', 'Su respuesta se envió con éxito!');
             }
 
-            DB::commit();
-            return redirect()->back()->with('success', 'Su respuesta se envió con éxito!');
         } catch (Exception $e) {
             DB::rollBack();
             return redirect()->back()-with('error', 'No se pudo registrar la respuesta');
-        } catch (\PDOException $e) {
-            if ($e->getCode() === '23000' && $e->errorInfo[1] === 1062) {
-                DB::rollBack();
-                $errorMessage = 'No puedes realizar 2 veces la misma encuesta.';
+        }
 
-                return redirect()->back()->with('error', $errorMessage);
+//        return redirect()->back()->with('error', 'Ocurrió un error!');
+    }
+
+    public function get_calificacion($request) {
+        $cantidad_preguntas = 0;
+        $sumatoria = 0;
+        for ($x = 0; $x < count($request->post('pregunta')); $x++) {
+            $pregunta = PreguntaEncuesta::find($request->post('pregunta')[$x]);
+            if ($pregunta) {
+                if ($pregunta->tipo_pregunta == 1) {
+                    $sumatoria = $sumatoria +  (int) $request->post('respuesta_' . $x);
+                    $cantidad_preguntas++;
+                }
             }
+        }
+
+        return $sumatoria / $cantidad_preguntas;
+    }
+
+    public function getEstadisticas(Request $request) {
+        $request = request();
+
+        $validator = Validator::make($request->all(), [
+            'from' => 'required|date',
+            'to' => 'required|date|after_or_equal:from',
+        ]);
+
+        if ($validator->fails()) {
+            // Las reglas de validación no se cumplen
+            $errors = $validator->errors();
+
+            return response()->json(['errors' => $errors], Response::HTTP_BAD_REQUEST);
+            // Manejar los errores de validación
+        } else {
+            // Las reglas de validación se cumplen, procede con la consulta
+            $fechaInicio = Carbon::parse($request->from);
+            $fechaFin = Carbon::parse($request->to);
+
+            $promedios = EncuestaContestada::select('curso.titulo as nombre_curso', DB::raw('CAST(AVG(encuesta_contestadas.calificacion) AS UNSIGNED) as promedio'), DB::raw('COUNT(*) as registros'))
+                ->join('curso', 'encuesta_contestadas.curso_id', '=', 'curso.idcurso')
+                ->whereBetween('encuesta_contestadas.created_at', [$fechaInicio, $fechaFin])
+                ->groupBy('curso_id', 'nombre_curso')
+                ->get();
+
+            return response()->json(['data' => $promedios]);
         }
     }
 }

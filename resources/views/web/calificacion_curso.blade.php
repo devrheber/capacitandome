@@ -119,6 +119,7 @@
                                         <div class="card-body">
                                             <form action="{{route('store_encuesta_curso')}}" method="POST" class="needs-validation" novalidate>
                                                 @csrf
+                                                <input id="idencuesta" name="idencuesta" value="{{ $encuesta->id }}" type="hidden">
                                                 <input id="user_id" name="user_id" value="{{ auth()->user()->idusuario }}" type="hidden">
                                                 <input id="idcurso" name="idcurso" value="{{ $curso->idcurso }}" type="hidden">
                                                 <div class="row-md-10">

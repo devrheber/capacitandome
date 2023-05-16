@@ -331,7 +331,11 @@ Route::group(['middleware' => ['web','auth']], function () {
     Route::post('/admin/encuesta/recursos', [EncuestaController::class, 'actualizar_recursos'])->name('admin_encuesta_recursos');
     Route::post('/admin/encuesta/editar', [EncuestaController::class, 'actualizar'])->name('admin_encuesta_editar');
     Route::get('/admin/encuestas/listar/{estado}', [EncuestaController::class, 'getListarEncuestasPaginate']);
-    Route::get('/admin/encuestas/listar/resultado', [EncuestaController::class, 'getListarEncuestasResultadosPaginate']);
+    Route::get('/admin/encuestas/resultado/listar/{estado}', [EncuestaController::class, 'getListarEncuestasResultadosPaginate']);
+    Route::get('/admin/encuestas/resultado/detalle/{idencuestacontestada}', [EncuestaController::class, 'detalle_resultado']);
+
+    Route::get('/admin/encuestas/estadisticas', [EncuestaController::class, 'estadisticas'])->name('admin_encuesta_estadisticas');
+    Route::get('/admin/encuestas/getEstadisticas', [EncuestaController::class, 'getEstadisticas']);
 
     Route::post('/encuesta/respuesta', [EncuestaController::class, 'store_encuesta_curso'])->name('store_encuesta_curso');
 });

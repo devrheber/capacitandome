@@ -10,6 +10,7 @@
                 <th scope="col">DOCENTE</th>
                 <th scope="col">CALFICACIÓN</th>
                 <th scope="col">FECHA</th>
+                <th scope="col">OPCIÓN</th>
             </tr>
             </thead>
             <tbody>
@@ -17,11 +18,17 @@
                 <tr id="tr_{{ $resultado->id }}">
                     <td style="vertical-align: middle;" scope="row">{{ $resultados->perPage()*($resultados->currentPage()-1)+($index+1)}}</td>
                     <td style="max-width: 340px; vertical-align: middle;" scope="row"><strong>{{ $resultado->user->Persona->nombre . ' ' . $resultado->user->Persona->apellidos }}</strong></td>
-                    <td style="vertical-align: middle;" scope="row">{{ $resultado->id }}</td>
+                    <td style="vertical-align: middle;" scope="row">{{ $resultado->user->Persona->dni }}</td>
+                    <td style="vertical-align: middle;" scope="row">{{ $resultado->curso->titulo }}</td>
+                    <td style="vertical-align: middle;" scope="row">
+                        @foreach($resultado->curso->CursoDocenteUsuarios as $docente)
+                            {{$docente->Persona->nombre . ' ' . $docente->Persona->apellidos}} </br>
+                        @endforeach
+                    </td>
+                    <td style="vertical-align: middle;" scope="row">{{ $resultado->calificacion }} <i class="fa fa-star" style="color: blue"></i></td>
+                    <td style="vertical-align: middle;" scope="row">{{ \Carbon\Carbon::make($resultado->created_at)->format('d-m-Y') }} </td>
                     <td style="vertical-align: middle;" scope="row" class="text-center">
-                        <a href="/admin/encuesta/editar/{{$resultado->id}}" class="btn btn-light-warning font-weight-bold btn-sm my-1" data-toggle="tooltip" data-placement="top" title="" data-original-title="Editar"><i class="fas fa-edit p-0"></i></a>
-
-                        <a href="/admin/encuesta/recursos/{{$resultado->id}}" class="btn btn-light-success btn-sm my-1" data-toggle="tooltip" data-placement="top" title="" data-original-title="Registrar recursos"><i class="fas fa-plus-circle p-0"></i></a>
+                        <a href="/admin/encuestas/resultado/detalle/{{$resultado->id}}" class="btn btn-light-success btn-sm my-1" data-toggle="tooltip" data-placement="top" title="" data-original-title="Ver respuestas">VER RESPUESTAS</a>
                     </td>
                 </tr>
             @endforeach
@@ -40,7 +47,7 @@
     </div>
 </div>
 <div class="col-md-12">
-    {{ $encuestas->links('vendor.pagination.paginate-admin') }}
+    {{ $resultados->links('vendor.pagination.paginate-admin') }}
 </div>
 
 <script>

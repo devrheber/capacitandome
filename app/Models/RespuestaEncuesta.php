@@ -11,10 +11,10 @@ class RespuestaEncuesta extends Model
     use HasFactory;
 
     public function pregunta() {
-        return $this->belongsTo(PreguntaEncuesta::class);
+        return $this->belongsTo(PreguntaEncuesta::class, 'pregunta_encuesta_id', 'id');
     }
 
-    public function user() {
-        return $this->belongsTo(User::class, 'user_id', 'idusuario');
+    public function encuesta_contestada() {
+        return $this->hasOne(EncuestaContestada::class);
     }
 }

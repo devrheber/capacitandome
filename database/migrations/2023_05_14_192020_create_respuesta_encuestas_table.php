@@ -13,15 +13,13 @@ return new class extends Migration
     {
         Schema::create('respuesta_encuestas', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('encuesta_contestada_id');
             $table->unsignedBigInteger('pregunta_encuesta_id');
-            $table->integer('user_id');
             $table->string('respuesta', 500);
             $table->timestamps();
 
+            $table->foreign('encuesta_contestada_id')->references('id')->on('encuesta_contestadas');
             $table->foreign('pregunta_encuesta_id')->references('id')->on('pregunta_encuestas');
-            $table->foreign('user_id')->references('idusuario')->on('users');
-
-            $table->unique(['pregunta_encuesta_id', 'user_id']);
         });
     }
 
